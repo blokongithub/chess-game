@@ -1,57 +1,29 @@
 import pygame
-    
-    
+
+
 class gameboard:
     def __init__(self, screen):
-        self.board = self.setupDataBoard()
+        self.board = None
+        self.setupDataBoard()
         self.screen = screen
-        
+        self.piece_images = self.load_piece_images()
+        self.selectedsquare = [0, 0]
+
     def setupDataBoard(self):
-        self.board = [["--" for i in range(8)] for i in range(8)]
+        self.board = [["--" for _ in range(8)] for _ in range(8)]
         self.board[0] = ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"]
-        self.board[1] = ["bp" for i in range(8)]
-        self.board[6] = ["wp" for i in range(8)]
+        self.board[1] = ["bp" for _ in range(8)]
+        self.board[6] = ["wp" for _ in range(8)]
         self.board[7] = ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
-        
-    def getpeice(self, x, y):
+
+    def get_piece(self, x, y):
         return self.board[y][x]
 
-    def highlight(self, x, y):
-        pygame.draw.rect(self.screen, (255, 0, 0), (x*100, y*100, 100, 100))
-        self.screen.blit(pygame.image.load("images/black_pawn.png"), (x*100, y*100))
-        
-    def pygameLoadImages(self):
-        for i in range(8):
-            bp = pygame.image.load("images/black_pawn.png")
-            self.screen.blit(bp, (100*i, 100))
-            wp = pygame.image.load("images/white_pawn.png")
-            self.screen.blit(wp, (100*i, 600))
-        br = pygame.image.load("images/black_rook.png")
-        self.screen.blit(br, (0, 0)); self.screen.blit(br, (700, 0))
-        wr = pygame.image.load("images/white_rook.png")
-        self.screen.blit(wr, (0, 700)); self.screen.blit(wr, (700, 700))
-        bn = pygame.image.load("images/black_knight.png")
-        self.screen.blit(bn, (100, 0)); self.screen.blit(bn, (600, 0))
-        wn = pygame.image.load("images/white_knight.png")
-        self.screen.blit(wn, (100, 700)); self.screen.blit(wn, (600, 700))
-        bb = pygame.image.load("images/black_bishop.png")
-        self.screen.blit(bb, (200, 0)); self.screen.blit(bb, (500, 0))
-        wb = pygame.image.load("images/white_bishop.png")
-        self.screen.blit(wb, (200, 700)); self.screen.blit(wb, (500, 700))
-        bq = pygame.image.load("images/black_queen.png")
-        self.screen.blit(bq, (300, 0))
-        wq = pygame.image.load("images/white_queen.png")
-        self.screen.blit(wq, (300, 700))
-        bk = pygame.image.load("images/black_king.png")
-        self.screen.blit(bk, (400, 0))
-        wk = pygame.image.load("images/white_king.png")
-        self.screen.blit(wk, (400, 700))
-        
     def pygameDrawBoard(self):
         c = [0, 0]
         green = True
         for i in range(64):
-            if green == True:
+            if green:
                 pygame.draw.rect(self.screen, (51, 204, 51), (c[0], c[1], 100, 100))
                 green = False
             else:
@@ -64,3 +36,31 @@ class gameboard:
                 green = not green
         self.pygameLoadImages()
         pygame.display.flip()
+
+    def load_piece_images(self):
+        pieces = ["bR", "wR", "bN", "wN", "bB", "wB", "bQ", "wQ", "bK", "wK", "bp", "wp"]
+        images = {}
+        for piece in pieces:
+            try:
+                images[piece] = pygame.image.load(f"images/{piece}.png")
+            except pygame.error as e:
+                print(f"Error loading image for {piece}: {e}")
+                images[piece] = None
+        return images
+
+    def pygameLoadImages(self):
+        for y, row in enumerate(self.board):
+            for x, piece in enumerate(row):
+                if piece != "--" and self.piece_images[piece]:
+                    self.screen.blit(self.piece_images[piece], (x * 100, y * 100))
+
+    def highlight(self, coords):
+        if self.selectedsquare:
+            prev_x, prev_y = self.selectedsquare
+            prev_color = (51, 204, 51) if (prev_x + prev_y) % 2 == 0 else (255, 255, 255)
+            pygame.draw.rect(self.screen, prev_color, (prev_x * 100, prev_y * 100, 100, 100), 3)
+
+        if self.board[coords[1]][coords[0]] != "--":
+            self.selectedsquare = coords
+            pygame.draw.rect(self.screen, (255, 0, 0), (coords[0] * 100, coords[1] * 100, 100, 100), 3)
+            pygame.display.flip()
