@@ -17,8 +17,8 @@ class gameboard:
         return self.board[y][x]
 
     def highlight(self, x, y):
-        self.self.screen.draw.rect(self.self.screen, (255, 0, 0), (x*100, y*100, 100, 100))
-        self.self.screen.blit(pygame.image.load("images/black_pawn.png"), (x*100, y*100))
+        pygame.draw.rect(self.screen, (255, 0, 0), (x*100, y*100, 100, 100))
+        self.screen.blit(pygame.image.load("images/black_pawn.png"), (x*100, y*100))
         
     def pygameLoadImages(self):
         for i in range(8):

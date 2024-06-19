@@ -10,6 +10,7 @@ timer = pygame.time.Clock()
 fps = 60
 chessboard = board.gameboard(screen)
 chessboard.pygameDrawBoard()
+chessboard.highlight(0, 0)
 pygame.display.flip()
 
 while running:
