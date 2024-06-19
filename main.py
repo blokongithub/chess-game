@@ -8,10 +8,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 running = True
 timer = pygame.time.Clock()
 fps = 60
-c = [0, 0]
-green = True
-board.pygameDrawBoard(screen)
+chessboard = board.gameboard(screen)
+chessboard.pygameDrawBoard()
+pygame.display.flip()
+
 while running:
+    print(pygame.mouse.get_pos())
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
