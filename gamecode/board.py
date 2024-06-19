@@ -8,6 +8,8 @@ class gameboard:
         self.screen = screen
         self.piece_images = self.load_piece_images()
         self.selectedsquare = [0, 0]
+        self.movesoptions = [[3, 5], [5, 6]]
+        self.selectedpeice = None
 
     def setupDataBoard(self):
         self.board = [["--" for _ in range(8)] for _ in range(8)]
@@ -62,5 +64,19 @@ class gameboard:
 
         if self.board[coords[1]][coords[0]] != "--":
             self.selectedsquare = coords
+            self.selectedpeice = [coords[0], coords[1], self.board[coords[1]][coords[0]]]
+            match self.selectedpeice[2]:
+                case "wp":
+                    self.getpawnoptions()
             pygame.draw.rect(self.screen, (255, 0, 0), (coords[0] * 100, coords[1] * 100, 100, 100), 3)
             pygame.display.flip()
+
+    def drawoptions(self):
+        for i in self.movesoptions:
+            pygame.draw.circle(self.screen, (0, 0, 255), (i[0] * 100 + 50, i[1] * 100 + 50), 15)
+
+    def getpawnoptions(self):
+        if self.selectedpeice[2] == "wp":
+            self.pygameDrawBoard()
+            self.movesoptions = [[self.selectedpeice[0], self.selectedpeice[1] - 1], [self.selectedpeice[0], self.selectedpeice[1] - 2]]
+            self.drawoptions()
