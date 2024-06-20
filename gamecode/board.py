@@ -86,13 +86,11 @@ class gameboard:
         x, y = self.selectedpeice[0], self.selectedpeice[1]
         if self.selectedpeice[2] == "wp":
 
-            # Forward moves
             if y > 0 and self.board[y - 1][x] == "--":
                 self.movesoptions.append([x, y - 1])
                 if y == 6 and self.board[y - 2][x] == "--":
                     self.movesoptions.append([x, y - 2])
 
-            # Capture moves
             if x < 7 and y > 0 and self.board[y - 1][x + 1] in self.blackpieces:
                 self.movesoptions.append([x + 1, y - 1])
             if x > 0 and y > 0 and self.board[y - 1][x - 1] in self.blackpieces:
@@ -103,7 +101,6 @@ class gameboard:
                 if y == 1 and self.board[y + 2][x] == "--":
                     self.movesoptions.append([x, y + 2])
 
-            # Capture moves
             if x < 7 and y > 0 and self.board[y + 1][x + 1] in self.whitepieces:
                 self.movesoptions.append([x + 1, y + 1])
             if x > 0 and y > 0 and self.board[y + 1][x - 1] in self.whitepieces:
