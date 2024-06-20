@@ -15,7 +15,8 @@ class gameboard:
         self.board = [["--" for _ in range(8)] for _ in range(8)]
         self.board[0] = ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"]
         self.board[1] = ["bp" for _ in range(8)]
-        self.board[6] = ["wp" for _ in range(8)]
+        self.board[4][5] = "wR"
+        self.board[6] = ["wR" for _ in range(8)]
         self.board[7] = ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
 
     def get_piece(self, x, y):
@@ -70,6 +71,8 @@ class gameboard:
                     self.getpawnoptions()
                 case "bp":
                     self.getpawnoptions()
+                case "wR":
+                    self.getrookoptions()
             pygame.draw.rect(self.screen, (255, 0, 0), (coords[0] * 100, coords[1] * 100, 100, 100), 3)
             pygame.display.flip()
 
@@ -106,3 +109,26 @@ class gameboard:
                 self.movesoptions.append([x - 1, y + 1])
         self.pygameDrawBoard()
         self.drawoptions()
+
+    def getrookoptions(self):
+        self.movesoptions = []
+        x, y = self.selectedpeice[0], self.selectedpeice[1]
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        for direction in directions:
+            dx, dy = direction
+            v, w = x + dx, y + dy
+            while 0 <= v < 8 and 0 <= w < 8:
+                if self.board[w][v] == "--":
+                    self.movesoptions.append([v, w])
+                elif self.board[w][v] in self.blackpieces:
+                    self.movesoptions.append([v, w])
+                    break
+                else:
+                    break
+                v += dx
+                w += dy
+
+        self.pygameDrawBoard()
+        self.drawoptions()
+        pygame.display.flip()
