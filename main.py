@@ -20,4 +20,5 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             pos = [math.floor(pos[0]/100), math.floor(pos[1]/100)]
+            print(pos)
             chessboard.highlight(pos)

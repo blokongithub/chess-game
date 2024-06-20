@@ -1,6 +1,5 @@
 import pygame
 
-
 class gameboard:
     def __init__(self, screen):
         self.board = None
@@ -10,7 +9,8 @@ class gameboard:
         self.selectedsquare = [0, 0]
         self.movesoptions = [[3, 5], [5, 6]]
         self.selectedpeice = None
-
+        self.blackpieces = ["bp", "bN", "bR", "bB", "bQ", "bK"]
+        self.whitepieces = ["wp", "wN", "wR", "wB", "wQ", "wK"]
     def setupDataBoard(self):
         self.board = [["--" for _ in range(8)] for _ in range(8)]
         self.board[0] = ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"]
@@ -68,6 +68,8 @@ class gameboard:
             match self.selectedpeice[2]:
                 case "wp":
                     self.getpawnoptions()
+                case "bp":
+                    self.getpawnoptions()
             pygame.draw.rect(self.screen, (255, 0, 0), (coords[0] * 100, coords[1] * 100, 100, 100), 3)
             pygame.display.flip()
 
@@ -76,7 +78,31 @@ class gameboard:
             pygame.draw.circle(self.screen, (0, 0, 255), (i[0] * 100 + 50, i[1] * 100 + 50), 15)
 
     def getpawnoptions(self):
+        self.movesoptions = []
+        x, y = self.selectedpeice[0], self.selectedpeice[1]
         if self.selectedpeice[2] == "wp":
-            self.pygameDrawBoard()
-            self.movesoptions = [[self.selectedpeice[0], self.selectedpeice[1] - 1], [self.selectedpeice[0], self.selectedpeice[1] - 2]]
-            self.drawoptions()
+
+            # Forward moves
+            if y > 0 and self.board[y - 1][x] == "--":
+                self.movesoptions.append([x, y - 1])
+                if y == 6 and self.board[y - 2][x] == "--":
+                    self.movesoptions.append([x, y - 2])
+
+            # Capture moves
+            if x < 7 and y > 0 and self.board[y - 1][x + 1] in self.blackpieces:
+                self.movesoptions.append([x + 1, y - 1])
+            if x > 0 and y > 0 and self.board[y - 1][x - 1] in self.blackpieces:
+                self.movesoptions.append([x - 1, y - 1])
+        elif self.selectedpeice[2] == "bp":
+            if y > 0 and self.board[y + 1][x] == "--":
+                self.movesoptions.append([x, y + 1])
+                if y == 1 and self.board[y + 2][x] == "--":
+                    self.movesoptions.append([x, y + 2])
+
+            # Capture moves
+            if x < 7 and y > 0 and self.board[y + 1][x + 1] in self.whitepieces:
+                self.movesoptions.append([x + 1, y + 1])
+            if x > 0 and y > 0 and self.board[y + 1][x - 1] in self.whitepieces:
+                self.movesoptions.append([x - 1, y + 1])
+        self.pygameDrawBoard()
+        self.drawoptions()
